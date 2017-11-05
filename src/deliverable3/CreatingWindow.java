@@ -27,7 +27,6 @@ public class CreatingWindow {
      */
     
     public static void main(String[] args) {
-        
-       JPanelsTest t = new JPanelsTest();
+       TicTacToeControl control = new TicTacToeControl();
     }
 }
