@@ -6,13 +6,17 @@
 package deliverable3;
 
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.Label;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,9 +30,10 @@ import javax.swing.WindowConstants;
 
 public class JPanelsUI extends JFrame implements ActionListener {
     
-    private JButton registerB, loginB, registerConfirmB, loginConfirmB, hostB, joinB;
+    private JButton registerB, loginB, registerConfirmB, loginConfirmB, hostB, joinB,cancelHostB,joinOKB;
     private JFrame frame;
-    private JPanel authenticationP, registerP, loginP, parentP, matchmakingSelectionP;
+    private JComboBox<String> dropDown;
+    private JPanel authenticationP, registerP, loginP, parentP, matchmakingSelectionP,hostingGameP,joinSelectionP,gameBoardP;
     private JTextField regUsername, regPassword, regFName, regLName, logUsername, logPassword;
     TicTacToeControl control;
     
@@ -36,6 +41,9 @@ public class JPanelsUI extends JFrame implements ActionListener {
     final static String REGISTER = "REGISTER";
     final static String LOGIN = "LOGIN";
     final static String MATCHMAKINGSELECTION = "MATCHMAKINGSELECTION";
+    final static String HOSTINGGAMEPANEL = "HOSTINGGAMEPANEL";
+    final static String GAMEBOARDPANEL = "GAMEBOARDPANEL";
+    final static String JOINSELECTION = "JOINSELECTION";
     
     public JPanelsUI(TicTacToeControl control)  {
         this.control = control;
@@ -111,10 +119,40 @@ public class JPanelsUI extends JFrame implements ActionListener {
         // Matchmaking selection page fields
         hostB = new JButton("Host a game");
         matchmakingSelectionP.add(hostB);
+        hostB.setActionCommand(HOSTINGGAMEPANEL);
         hostB.addActionListener(this);
         joinB = new JButton("Join a game");
         matchmakingSelectionP.add(joinB);
+        joinB.setActionCommand(JOINSELECTION);
         joinB.addActionListener(this);
+        
+        // Hosting a game Panel
+        hostingGameP = new JPanel(new GridLayout(2,1));
+        parentP.add(hostingGameP,HOSTINGGAMEPANEL);
+        // Hosting fields
+        hostingGameP.add(new JLabel("Waiting for next Player"));
+        cancelHostB = new JButton("Cancel hosting");
+        hostingGameP.add(cancelHostB);
+        cancelHostB.addActionListener(this);
+        
+        //Select wich game to join Panel
+        joinSelectionP = new JPanel();
+        joinSelectionP.setLayout(new BoxLayout(joinSelectionP, BoxLayout.Y_AXIS));
+        parentP.add(joinSelectionP);
+        parentP.add(joinSelectionP,JOINSELECTION);
+        
+        JLabel lbl = new JLabel("Select one of the possible choices and click OK");
+        lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        joinSelectionP.add(lbl);
+        
+        
+        gameBoardP = new JPanel();
+        gameBoardP.add(new Label("Game board panle"));
+        parentP.add(gameBoardP,GAMEBOARDPANEL);
+        
+        
+        
         
         
         int frameWidth = 200;
@@ -154,6 +192,37 @@ public class JPanelsUI extends JFrame implements ActionListener {
                 c1.show(parentP, e.getActionCommand());
             }
         }
+        else if (source.equals(hostB)){
+               if(control.hostGame()){
+                   c1.show(parentP, e.getActionCommand());
+               }              
+            
+        }
+        else if (source.equals(joinB)){
+            String [] choices ;
+            
+            choices = control.getAllGamesOpen();
+            dropDown = new JComboBox<String>(choices);
+            dropDown.setMaximumSize(dropDown.getPreferredSize()); // added code
+            dropDown.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            joinSelectionP.add(dropDown);
+            
+            joinOKB = new JButton("OK");
+            joinOKB.setAlignmentX(Component.CENTER_ALIGNMENT); // added code
+            joinSelectionP.add(joinOKB);
+            joinOKB.setActionCommand(GAMEBOARDPANEL);
+            joinOKB.addActionListener(this);
+            c1.show(parentP,  e.getActionCommand());
+        }else if (source.equals(joinOKB)){
+            
+            String gameSelected = (String)dropDown.getSelectedItem();
+            String tempArr[] = gameSelected.split(",");
+            if(control.joinSelectedGame(Integer.parseInt(tempArr[0]))){
+                c1.show(parentP, GAMEBOARDPANEL);
+            }
+        }
+        
         
         
     }

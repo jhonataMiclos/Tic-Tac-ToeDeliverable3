@@ -17,7 +17,8 @@ public class TicTacToeControl {
     JPanelsUI ui;
     
     private String username;
-    private String autoKey;
+    private int autoKey;
+    private int gameAutoKey;
     
     public TicTacToeControl() {
         webService = new TTTWebService();
@@ -39,7 +40,7 @@ public class TicTacToeControl {
     
     public boolean loginUser(String username, String password) {
         this.username = username;
-        int autoKey = webService.login(username, password);
+        autoKey = webService.login(username, password);
         
         if (autoKey == 0) {
             JOptionPane.showMessageDialog(null, "Couldn't Log in");
@@ -47,5 +48,36 @@ public class TicTacToeControl {
         } else {
             return true;
         }
+    }
+    public boolean hostGame(){
+       String result = webService.newGame(autoKey);
+       
+       if (result.matches("\\d+")) {
+            JOptionPane.showMessageDialog(null, "Game created");
+            gameAutoKey = Integer.parseInt(result);
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(null, "HOST-" + result);
+            return false;
+        
+        }
+    }
+    public String[] getAllGamesOpen(){
+        String temp = webService.showOpenGames();
+        String tempArr[] = temp.split("\n");
+        return tempArr;
+    }
+    public boolean joinSelectedGame(int gameId){
+        String result = webService.joinGame(autoKey, gameId);
+        
+        if(result.matches("1")){
+            gameAutoKey= gameId;
+            return true;
+            
+        }else{
+            JOptionPane.showMessageDialog(null, "JOIN-" + result);
+            return false;
+        }
+        
     }
 }
