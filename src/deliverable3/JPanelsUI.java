@@ -5,23 +5,10 @@
  */
 package deliverable3;
 
-import java.awt.CardLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.HeadlessException;
-import java.awt.Label;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 /**
  *
@@ -35,7 +22,8 @@ public class JPanelsUI extends JFrame implements ActionListener {
     private JComboBox<String> dropDown;
     private JPanel authenticationP, registerP, loginP, parentP, matchmakingSelectionP,hostingGameP,joinSelectionP,gameBoardP;
     private JTextField regUsername, regPassword, regFName, regLName, logUsername, logPassword;
-    TicTacToeControl control;
+    private TicTacToeControl control;
+    private JButton[] squares;
     
     final static String AUTHENTICATION = "AUTHENTICATION";
     final static String REGISTER = "REGISTER";
@@ -48,11 +36,11 @@ public class JPanelsUI extends JFrame implements ActionListener {
     public JPanelsUI(TicTacToeControl control)  {
         this.control = control;
         
-        int windowWidth = 400;
-        int windowHeight = 400;
+        int windowWidth = 500;
+        int windowHeight = 300;
         
         frame = new JFrame();
-        frame.setSize(windowWidth, windowHeight);
+        frame.setBounds(300, 200, windowWidth, windowHeight);
         
         parentP = new JPanel(new CardLayout());
         frame.addWindowListener(new WindowEventHandler());
@@ -135,7 +123,7 @@ public class JPanelsUI extends JFrame implements ActionListener {
         hostingGameP.add(cancelHostB);
         cancelHostB.addActionListener(this);
         
-        //Select wich game to join Panel
+        //Select which game to join Panel
         joinSelectionP = new JPanel();
         joinSelectionP.setLayout(new BoxLayout(joinSelectionP, BoxLayout.Y_AXIS));
         parentP.add(joinSelectionP);
@@ -147,11 +135,32 @@ public class JPanelsUI extends JFrame implements ActionListener {
         joinSelectionP.add(lbl);
         
         
-        gameBoardP = new JPanel();
-        gameBoardP.add(new Label("Game board panle"));
+        // Game board page
+        gameBoardP = new JPanel(new GridLayout(1,2));
         parentP.add(gameBoardP,GAMEBOARDPANEL);
         
+        // Game board page fields
+        JPanel gameBoard = new JPanel();
+        //gameBoard.setBounds(new Rectangle(parentP.getBounds()));
+        gameBoard.setLayout(new GridLayout(3,3));
+        squares = new JButton[9];
+        for(int i=0;i<9;i++) {
+            squares[i] = new JButton(" ");
+            squares[i].setBackground(Color.WHITE);
+            squares[i].addActionListener(this);
+            gameBoard.add(squares[i]);
+        }
         
+        JPanel menu = new JPanel();
+        menu.setLayout(new GridLayout(3,1));
+        
+        JLabel curPlayerID = new JLabel("Click 'Start New Game'", SwingConstants.CENTER);
+        curPlayerID.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        
+        menu.add(curPlayerID);
+        
+        gameBoardP.add(menu);
+        gameBoardP.add(gameBoard, BorderLayout.CENTER);
         
         
         
@@ -161,6 +170,23 @@ public class JPanelsUI extends JFrame implements ActionListener {
         //Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         //frame.setBounds((int) screenSize.getWidth() - frameWidth, 0, frameWidth, frameHeight);
         frame.setVisible(true);
+    }
+    
+    public void switchPage(String page) {
+        CardLayout c1 = (CardLayout)(parentP.getLayout());
+        c1.show(parentP, page);
+    }
+    
+    public void colorSquare(int x, int y, int playerNum) {
+        int squareNum = x * 3 + y;
+        
+        if (playerNum == 1) {
+            squares[squareNum].setBackground(Color.GREEN);
+        } else if (playerNum == 2) {
+            squares[squareNum].setBackground(Color.RED);
+        } else {
+            squares[squareNum].setBackground(Color.WHITE);
+        }
     }
     
     
@@ -193,10 +219,9 @@ public class JPanelsUI extends JFrame implements ActionListener {
             }
         }
         else if (source.equals(hostB)){
-               if(control.hostGame()){
-                   c1.show(parentP, e.getActionCommand());
-               }              
-            
+            if(control.hostGame()){
+                c1.show(parentP, e.getActionCommand());
+            }
         }
         else if (source.equals(joinB)){
             String [] choices ;
@@ -214,7 +239,8 @@ public class JPanelsUI extends JFrame implements ActionListener {
             joinOKB.setActionCommand(GAMEBOARDPANEL);
             joinOKB.addActionListener(this);
             c1.show(parentP,  e.getActionCommand());
-        }else if (source.equals(joinOKB)){
+        }
+        else if (source.equals(joinOKB)){
             
             String gameSelected = (String)dropDown.getSelectedItem();
             String tempArr[] = gameSelected.split(",");
@@ -222,9 +248,33 @@ public class JPanelsUI extends JFrame implements ActionListener {
                 c1.show(parentP, GAMEBOARDPANEL);
             }
         }
-        
-        
-        
+        else if(source.equals(squares[0])) {
+            control.clickSquare(0, 0);
+        }
+        else if(source.equals(squares[1])) {
+            control.clickSquare(0, 1);
+        }
+        else if(source.equals(squares[2])) {
+            control.clickSquare(0, 2);
+        }
+        else if(source.equals(squares[3])) {
+            control.clickSquare(1, 0);
+        }
+        else if(source.equals(squares[4])) {
+            control.clickSquare(1, 1);
+        }
+        else if(source.equals(squares[5])) {
+            control.clickSquare(1, 2);
+        }
+        else if(source.equals(squares[6])) {
+            control.clickSquare(2, 0);
+        }
+        else if(source.equals(squares[7])) {
+            control.clickSquare(2, 1);
+        }
+        else if(source.equals(squares[8])) {
+            control.clickSquare(2, 2);
+        }
     }
     
 }

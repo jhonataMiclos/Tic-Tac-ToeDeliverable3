@@ -28,5 +28,6 @@ public class CreatingWindow {
     
     public static void main(String[] args) {
        TicTacToeControl control = new TicTacToeControl();
+       new Thread(control).start();
     }
 }
