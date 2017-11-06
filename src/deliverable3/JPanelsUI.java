@@ -22,6 +22,7 @@ public class JPanelsUI extends JFrame implements ActionListener {
     private JComboBox<String> dropDown;
     private JPanel authenticationP, registerP, loginP, parentP, matchmakingSelectionP,hostingGameP,joinSelectionP,gameBoardP;
     private JTextField regUsername, regPassword, regFName, regLName, logUsername, logPassword;
+    private JLabel curPlayerID;
     private TicTacToeControl control;
     private JButton[] squares;
     
@@ -154,7 +155,7 @@ public class JPanelsUI extends JFrame implements ActionListener {
         JPanel menu = new JPanel();
         menu.setLayout(new GridLayout(3,1));
         
-        JLabel curPlayerID = new JLabel("Click 'Start New Game'", SwingConstants.CENTER);
+        curPlayerID = new JLabel("", SwingConstants.CENTER);
         curPlayerID.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         
         menu.add(curPlayerID);
@@ -177,8 +178,25 @@ public class JPanelsUI extends JFrame implements ActionListener {
         c1.show(parentP, page);
     }
     
+    public void turnIndicatorColor(int currentPlayerNum, int playerNum) {
+        if (currentPlayerNum == 1) {
+            curPlayerID.setForeground(Color.GREEN);
+        } else if (currentPlayerNum == 2) {
+            curPlayerID.setForeground(Color.RED);
+        } else {
+            curPlayerID.setForeground(Color.WHITE);
+        }
+        
+        if (currentPlayerNum == playerNum) {
+            curPlayerID.setText("Your turn");
+        }
+        else {
+            curPlayerID.setText("Opponent's turn");
+        }
+    }
+    
     public void colorSquare(int x, int y, int playerNum) {
-        int squareNum = x * 3 + y;
+        int squareNum = x + y * 3;
         
         if (playerNum == 1) {
             squares[squareNum].setBackground(Color.GREEN);
@@ -189,6 +207,11 @@ public class JPanelsUI extends JFrame implements ActionListener {
         }
     }
     
+    public void reset() {
+        for (int i = 0; i < squares.length; i++) {
+            squares[i].setBackground(Color.WHITE);
+        }
+    }
     
     public void actionPerformed(ActionEvent e) {
         JButton source = (JButton) e.getSource();
@@ -252,25 +275,25 @@ public class JPanelsUI extends JFrame implements ActionListener {
             control.clickSquare(0, 0);
         }
         else if(source.equals(squares[1])) {
-            control.clickSquare(0, 1);
+            control.clickSquare(1, 0);
         }
         else if(source.equals(squares[2])) {
-            control.clickSquare(0, 2);
+            control.clickSquare(2, 0);
         }
         else if(source.equals(squares[3])) {
-            control.clickSquare(1, 0);
+            control.clickSquare(0, 1);
         }
         else if(source.equals(squares[4])) {
             control.clickSquare(1, 1);
         }
         else if(source.equals(squares[5])) {
-            control.clickSquare(1, 2);
+            control.clickSquare(2, 1);
         }
         else if(source.equals(squares[6])) {
-            control.clickSquare(2, 0);
+            control.clickSquare(0, 2);
         }
         else if(source.equals(squares[7])) {
-            control.clickSquare(2, 1);
+            control.clickSquare(1, 2);
         }
         else if(source.equals(squares[8])) {
             control.clickSquare(2, 2);

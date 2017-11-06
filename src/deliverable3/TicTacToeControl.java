@@ -43,6 +43,7 @@ public class TicTacToeControl implements Runnable {
                         gameState = 0;
                         currentPlayerNum = playerNum;
                         ui.switchPage("GAMEBOARDPANEL");
+                        ui.turnIndicatorColor(currentPlayerNum, playerNum);
                     } else {
                         try {
                             Thread.sleep(1000);
@@ -63,12 +64,13 @@ public class TicTacToeControl implements Runnable {
                     }
                 } else {
                     String[] splitResult = result.split("\n");
+                    
                     if (splitResult.length > 0) {
                         splitResult[splitResult.length - 1].replaceAll("\\{", "");
                         splitResult[splitResult.length - 1].replaceAll("\\}", "");
-                        String[] mostRecentMove = splitResult[splitResult.length - 1].split(", ");
+                        String[] mostRecentMove = splitResult[splitResult.length - 1].split(",");
                         
-                        if (mostRecentMove.equals("playerNum")) {
+                        if (mostRecentMove[0].equals(Integer.toString(playerAutoKey))) {
                             try {
                                 Thread.sleep(1000);
                             } catch(Exception e) {
@@ -76,8 +78,15 @@ public class TicTacToeControl implements Runnable {
                             }
                         }
                         else {
+                            int x, y, enemyPlayerNum;
+                            x = Integer.parseInt(mostRecentMove[1]);
+                            y = Integer.parseInt(mostRecentMove[2]);
+                            enemyPlayerNum = playerNum == 1 ? 2 : 1;
+                            
+                            ui.colorSquare(x, y, enemyPlayerNum);
                             currentPlayerNum = playerNum;
-                            // TODO Check winner
+                            ui.turnIndicatorColor(currentPlayerNum, playerNum);
+                            checkGameOver();
                         }
                     }
                 }
@@ -145,7 +154,9 @@ public class TicTacToeControl implements Runnable {
         if(result.matches("1")){
             gameAutoKey= gameId;
             playerNum = 2;
+            currentPlayerNum = 1;
             gameState = 0;
+            ui.turnIndicatorColor(currentPlayerNum, playerNum);
             return true;
             
         }else{
@@ -162,7 +173,11 @@ public class TicTacToeControl implements Runnable {
                 
                 if (result.equals("1")) {
                     ui.colorSquare(x, y, playerNum);
+                    
+                    // Set currentPlayerNum to enemy's playerNum
                     currentPlayerNum = playerNum == 1 ? 2 : 1;
+                    ui.turnIndicatorColor(currentPlayerNum, playerNum);
+                    checkGameOver();
                 }
                 else {
                     JOptionPane.showMessageDialog(null, result);
@@ -177,6 +192,47 @@ public class TicTacToeControl implements Runnable {
         }
         else {
             JOptionPane.showMessageDialog(null, "It's not your turn");
+        }
+    }
+    
+    public void reset() {
+        gameState = -2;
+        ui.reset();
+    }
+    
+    public void checkGameOver() {
+        boolean gameOver = false;
+        String result = webService.checkWin(gameAutoKey);
+        System.out.println("in checkGameOver(); result = " + result);
+        
+        if (result.startsWith("ERROR")) {
+            JOptionPane.showMessageDialog(null, result);
+        }
+        else {
+            int winType = Integer.parseInt(result);
+            int enemyPlayerNum = playerNum == 1 ? 2 : 1;
+            webService.setGameState(gameAutoKey, winType);
+            
+            if (winType == playerNum) {
+                gameOver = true;
+                ui.turnIndicatorColor(currentPlayerNum, playerNum);
+                JOptionPane.showMessageDialog(null, "Game over. You won!");
+            }
+            else if (winType == enemyPlayerNum) {
+                gameOver = true;
+                ui.turnIndicatorColor(currentPlayerNum, playerNum);
+                JOptionPane.showMessageDialog(null, "Game over. You lost!");
+            }
+            else if (winType == 3) {
+                gameOver = true;
+                ui.turnIndicatorColor(currentPlayerNum, playerNum);
+                JOptionPane.showMessageDialog(null, "Game over. It's a draw!");
+            }
+        }
+        
+        if (gameOver) {
+            reset();
+            ui.switchPage("MATCHMAKINGSELECTION");
         }
     }
 }

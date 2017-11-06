@@ -280,6 +280,7 @@ public class TTTWebService {
     @WebMethod(operationName = "checkWin")
     public String checkWin(@WebParam(name = "gid") int gid) {
         String result = getBoard(gid);
+        System.out.println(result);
         int winner = 0;
         if(result.length() > 0) {
             String[] rows = result.split("\n");
@@ -300,10 +301,10 @@ public class TTTWebService {
             
             //check rows and cols
             for(int t=0;t<3;t++) {
-                if(table[t][0] == table[t][1] && table[t][1] == table[t][2]) {
+                if(table[t][0] == table[t][1] && table[t][1] == table[t][2] && table[t][0] != 0) {
                     winner = table[t][0];
                 }
-                if(table[0][t] == table[1][t] && table[1][t] == table[2][t]) {
+                if(table[0][t] == table[1][t] && table[1][t] == table[2][t] && table[0][t] != 0) {
                     winner = table[0][t];
                 }
             }
