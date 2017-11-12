@@ -147,7 +147,11 @@ public class TicTacToeControl implements Runnable {
         String tempArr[] = temp.split("\n");
         return tempArr;
     }
-    
+    public String [] getLeageTable(){
+        String temp = webService.leagueTable();
+        String tempArr[] = temp.split("\n");
+        return tempArr;
+    }
     public boolean joinSelectedGame(int gameId){
         String result = webService.joinGame(playerAutoKey, gameId);
         

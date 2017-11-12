@@ -8,6 +8,9 @@ package deliverable3;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 
 /**
@@ -17,10 +20,12 @@ import javax.swing.*;
 
 public class JPanelsUI extends JFrame implements ActionListener {
     
-    private JButton registerB, loginB, registerConfirmB, loginConfirmB, hostB, joinB,cancelHostB,joinOKB;
+    private JButton registerB, loginB, registerConfirmB, loginConfirmB, hostB, joinB,cancelHostB,joinOKB,leaderBoardB,joinBackB,leaderBoardBackB;
     private JFrame frame;
     private JComboBox<String> dropDown;
-    private JPanel authenticationP, registerP, loginP, parentP, matchmakingSelectionP,hostingGameP,joinSelectionP,gameBoardP;
+    private JScrollPane scrollPane;
+    private JTable leageList;
+    private JPanel authenticationP, registerP, loginP, parentP, matchmakingSelectionP,hostingGameP,joinSelectionP,gameBoardP,leaderBoardP;
     private JTextField regUsername, regPassword, regFName, regLName, logUsername, logPassword;
     private JLabel curPlayerID;
     private TicTacToeControl control;
@@ -33,6 +38,7 @@ public class JPanelsUI extends JFrame implements ActionListener {
     final static String HOSTINGGAMEPANEL = "HOSTINGGAMEPANEL";
     final static String GAMEBOARDPANEL = "GAMEBOARDPANEL";
     final static String JOINSELECTION = "JOINSELECTION";
+    final static String LEADERBOARD = "LEADERBOARD";
     
     public JPanelsUI(TicTacToeControl control)  {
         this.control = control;
@@ -48,6 +54,35 @@ public class JPanelsUI extends JFrame implements ActionListener {
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
+        createAutentificationP();
+        
+        createRegisterP();
+        
+        createLoginP();
+        
+        createMatchMakingSelectP();
+        
+       
+        createHostP();
+        
+        createJoinP();
+        
+        createGameBoardP();
+        
+        createLeaderBoardP();
+        // Game board page
+       
+        
+        
+        
+        int frameWidth = 200;
+        int frameHeight = 100;
+        frame.add(parentP);
+        //Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        //frame.setBounds((int) screenSize.getWidth() - frameWidth, 0, frameWidth, frameHeight);
+        frame.setVisible(true);
+    }
+    private void createAutentificationP(){
         authenticationP = new JPanel(new GridLayout(2,1));
         parentP.add(authenticationP,AUTHENTICATION);
         
@@ -60,9 +95,8 @@ public class JPanelsUI extends JFrame implements ActionListener {
         loginB.setActionCommand(LOGIN);
         loginB.addActionListener(this);
         authenticationP.add(loginB);
-        
-        
-        
+    }
+    private void createRegisterP(){
         registerP = new JPanel(new GridLayout(5,2));
         parentP.add(registerP,REGISTER);
         
@@ -84,8 +118,8 @@ public class JPanelsUI extends JFrame implements ActionListener {
         registerConfirmB.addActionListener(this);
         registerP.add(registerConfirmB);
         
-        
-        
+    }
+    private void createLoginP(){
         loginP = new JPanel(new GridLayout(3,2));
         parentP.add(loginP,LOGIN);
         
@@ -100,9 +134,9 @@ public class JPanelsUI extends JFrame implements ActionListener {
         loginConfirmB.setActionCommand(MATCHMAKINGSELECTION);
         loginConfirmB.addActionListener(this);
         loginP.add(loginConfirmB);
-        
-        
-        matchmakingSelectionP = new JPanel(new GridLayout(2,1));
+    }
+    private void createMatchMakingSelectP(){
+        matchmakingSelectionP = new JPanel(new GridLayout(3,1));
         parentP.add(matchmakingSelectionP,MATCHMAKINGSELECTION);
         
         // Matchmaking selection page fields
@@ -114,8 +148,26 @@ public class JPanelsUI extends JFrame implements ActionListener {
         matchmakingSelectionP.add(joinB);
         joinB.setActionCommand(JOINSELECTION);
         joinB.addActionListener(this);
+        leaderBoardB = new JButton("Leader board");
+        matchmakingSelectionP.add(leaderBoardB);
+        leaderBoardB.setActionCommand(LEADERBOARD);
+        leaderBoardB.addActionListener(this);
+    }
+    private void createLeaderBoardP(){
+        leaderBoardP = new JPanel(new GridLayout(2,1));
+        parentP.add(leaderBoardP,LEADERBOARD);
         
-        // Hosting a game Panel
+        leaderBoardBackB = new JButton("Back");
+        leaderBoardP.add(leaderBoardBackB);
+        leaderBoardBackB.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leaderBoardBackB.setActionCommand(MATCHMAKINGSELECTION);
+        leaderBoardBackB.addActionListener(this);
+        
+        
+        
+    }
+    private void createHostP(){
+         // Hosting a game Panel
         hostingGameP = new JPanel(new GridLayout(2,1));
         parentP.add(hostingGameP,HOSTINGGAMEPANEL);
         // Hosting fields
@@ -123,7 +175,9 @@ public class JPanelsUI extends JFrame implements ActionListener {
         cancelHostB = new JButton("Cancel hosting");
         hostingGameP.add(cancelHostB);
         cancelHostB.addActionListener(this);
-        
+    }
+    private void createJoinP(){
+          
         //Select which game to join Panel
         joinSelectionP = new JPanel();
         joinSelectionP.setLayout(new BoxLayout(joinSelectionP, BoxLayout.Y_AXIS));
@@ -132,11 +186,17 @@ public class JPanelsUI extends JFrame implements ActionListener {
         
         JLabel lbl = new JLabel("Select one of the possible choices and click OK");
         lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
         joinSelectionP.add(lbl);
         
+        joinBackB = new JButton("Back");
+        joinSelectionP.add(joinBackB);
+        joinBackB.setAlignmentX(Component.CENTER_ALIGNMENT);
+        joinBackB.setActionCommand(MATCHMAKINGSELECTION);
+        joinBackB.addActionListener(this);
         
-        // Game board page
+        
+    }
+    private void createGameBoardP(){
         gameBoardP = new JPanel(new GridLayout(1,2));
         parentP.add(gameBoardP,GAMEBOARDPANEL);
         
@@ -162,16 +222,8 @@ public class JPanelsUI extends JFrame implements ActionListener {
         
         gameBoardP.add(menu);
         gameBoardP.add(gameBoard, BorderLayout.CENTER);
-        
-        
-        
-        int frameWidth = 200;
-        int frameHeight = 100;
-        frame.add(parentP);
-        //Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        //frame.setBounds((int) screenSize.getWidth() - frameWidth, 0, frameWidth, frameHeight);
-        frame.setVisible(true);
     }
+    
     
     public void switchPage(String page) {
         CardLayout c1 = (CardLayout)(parentP.getLayout());
@@ -247,10 +299,13 @@ public class JPanelsUI extends JFrame implements ActionListener {
             }
         }
         else if (source.equals(joinB)){
+            
+           
             String [] choices ;
             
             choices = control.getAllGamesOpen();
             dropDown = new JComboBox<String>(choices);
+            
             dropDown.setMaximumSize(dropDown.getPreferredSize()); // added code
             dropDown.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -263,12 +318,23 @@ public class JPanelsUI extends JFrame implements ActionListener {
             joinOKB.addActionListener(this);
             c1.show(parentP,  e.getActionCommand());
         }
+        else if(source.equals(joinBackB)){
+            c1.show(parentP, e.getActionCommand());
+            joinSelectionP.remove(dropDown);
+            joinSelectionP.remove(joinOKB);
+        }
+        else if(source.equals(leaderBoardBackB)){
+            c1.show(parentP, e.getActionCommand());
+            leaderBoardP.remove(scrollPane);
+        }
         else if (source.equals(joinOKB)){
             
             String gameSelected = (String)dropDown.getSelectedItem();
             String tempArr[] = gameSelected.split(",");
             if(control.joinSelectedGame(Integer.parseInt(tempArr[0]))){
-                c1.show(parentP, GAMEBOARDPANEL);
+                c1.show(parentP, e.getActionCommand());
+                 joinSelectionP.remove(dropDown);
+                 joinSelectionP.remove(joinOKB);
             }
         }
         else if(source.equals(squares[0])) {
@@ -297,6 +363,136 @@ public class JPanelsUI extends JFrame implements ActionListener {
         }
         else if(source.equals(squares[8])) {
             control.clickSquare(2, 2);
+        }
+        else if(source.equals(leaderBoardB)){
+            
+            String myInfo[] = control.getLeageTable();
+            int val = 0;
+            int num = 0;
+            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+            for(int i = 0 ; i < myInfo.length;i++){
+                String temp[] = myInfo[i].split(",");
+                val  = Integer.parseInt(temp[3]);
+                
+                if(list.size() > 0){
+                   // System.out.println(list.size());
+                    for(int j = 0 ; j < list.size();j++ ){
+                        
+                        if(val == 1){
+                           
+                            if(list.get(j).get(0).compareTo(temp[1])== 0){
+                                    
+                                    num = Integer.parseInt(list.get(j).get(1));
+                                    list.get(j).set(1,"" + (num + 1) );
+                                    
+                            
+
+                            }
+                            else if(list.get(j).get(0).compareTo(temp[2])== 0){
+                                num = Integer.parseInt(list.get(j).get(2));
+                                list.get(j).set(2,"" + (num + 1) );
+                            }
+
+                        }
+                        else if(val == 2){
+                            if(list.get(j).get(0).compareTo(temp[1])== 0){
+                                    
+                                    num = Integer.parseInt(list.get(j).get(2));
+                                    list.get(j).set(2,"" + (num + 1) );
+                                    
+                            
+
+                            }
+                            else if(list.get(j).get(0).compareTo(temp[2])== 0){
+                                num = Integer.parseInt(list.get(j).get(1));
+                                list.get(j).set(1,"" + (num + 1) );
+                            }
+                        }
+                        else if(val == 3){
+                            if(list.get(j).get(0).compareTo(temp[1])== 0){
+                                    
+                                    num = Integer.parseInt(list.get(j).get(3));
+                                    list.get(j).set(3,"" + (num + 1) );
+                                    
+                            
+
+                            }
+                            else if(list.get(j).get(0).compareTo(temp[2])== 0){
+                                num = Integer.parseInt(list.get(j).get(3));
+                                list.get(j).set(3,"" + (num + 1) );
+                            }
+                        }
+                    }
+                }
+                else{
+                    
+                    ArrayList<String> tempList1 = new ArrayList<String>();
+                    ArrayList<String> tempList2 = new ArrayList<String>();
+                    // val  = Integer.parseInt(temp[3]);
+                    if(val == 1){
+                        tempList1.add(temp[val]);
+                        tempList1.add("1");
+                        tempList1.add("0");
+                        tempList1.add("0");
+                        
+                        tempList2.add(temp[val + 1]);
+                        tempList2.add("0");
+                        tempList2.add("1");
+                        tempList2.add("0");
+                    }
+                    else if(val == 2){
+                        tempList1.add(temp[val -1 ]);
+                        tempList1.add("0");
+                        tempList1.add("1");
+                        tempList1.add("0");
+                        
+                        tempList2.add(temp[val]);
+                        tempList2.add("1");
+                        tempList2.add("0");
+                        tempList2.add("0");
+                    }
+                    else if(val == 3){
+                        tempList1.add(temp[val -2]);
+                        tempList1.add("0");
+                        tempList1.add("0");
+                        tempList1.add("1");
+                        
+                        tempList2.add(temp[val - 1]);
+                        tempList2.add("0");
+                        tempList2.add("0");
+                        tempList2.add("1");
+                    }
+                    if(val!= 0){
+                        list.add((ArrayList<String>) tempList1.clone());
+                        list.add((ArrayList<String>) tempList2.clone());
+                        
+                    }
+                    
+                }
+                
+                
+                
+               
+            }
+           
+            String colNames[] = {"Player name" ,"Wins","Losses" ,"Draws"};
+            String [][] finalArr = new String[list.size()][4];
+            for(int i = 0; i < list.size();i++){
+                
+               //finalArr[i] =  (String[]) list.get(i).toArray();
+                for(int j = 0 ; j< list.get(0).size();j++){
+                    //result += list.get(i).get(j) + "    ";
+                    finalArr[i][j] = list.get(i).get(j);
+                }
+                
+            }
+            leageList = new JTable(finalArr, colNames);
+            scrollPane = new JScrollPane(leageList);
+            leageList.setFillsViewportHeight(true);
+            
+            leaderBoardP.add(scrollPane);
+            c1.show(parentP,  e.getActionCommand());
+            
         }
     }
     
