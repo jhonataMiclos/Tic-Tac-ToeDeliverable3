@@ -172,9 +172,9 @@ public class JPanelsUI extends JFrame implements ActionListener {
         parentP.add(hostingGameP,HOSTINGGAMEPANEL);
         // Hosting fields
         hostingGameP.add(new JLabel("Waiting for next Player"));
-        cancelHostB = new JButton("Cancel hosting");
+       /* cancelHostB = new JButton("Cancel hosting");
         hostingGameP.add(cancelHostB);
-        cancelHostB.addActionListener(this);
+        cancelHostB.addActionListener(this);*/
     }
     private void createJoinP(){
           
@@ -369,6 +369,7 @@ public class JPanelsUI extends JFrame implements ActionListener {
             String myInfo[] = control.getLeageTable();
             int val = 0;
             int num = 0;
+            boolean inList = false;
             ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
             for(int i = 0 ; i < myInfo.length;i++){
                 String temp[] = myInfo[i].split(",");
@@ -376,6 +377,22 @@ public class JPanelsUI extends JFrame implements ActionListener {
                 
                 if(list.size() > 0){
                    // System.out.println(list.size());
+                   for (int c = 1 ;c <= 2;c++){
+                       for(int index = 0 ; index <list.size();index++ ){
+                           if(list.get(index).get(0).compareTo(temp[c])== 0)
+                               inList = true;
+                           
+                       }
+                       if(!inList){
+                           ArrayList<String> tempList1 = new ArrayList<String>();
+                           tempList1.add(temp[c]);
+                           tempList1.add("0");
+                           tempList1.add("0");
+                           tempList1.add("0");
+                           list.add(tempList1);
+                       }
+                       inList= false;
+                   }
                     for(int j = 0 ; j < list.size();j++ ){
                         
                         if(val == 1){
@@ -474,6 +491,7 @@ public class JPanelsUI extends JFrame implements ActionListener {
                 
                
             }
+            sort(list,0,list.size()-1);
            
             String colNames[] = {"Player name" ,"Wins","Losses" ,"Draws"};
             String [][] finalArr = new String[list.size()][4];
@@ -494,6 +512,55 @@ public class JPanelsUI extends JFrame implements ActionListener {
             c1.show(parentP,  e.getActionCommand());
             
         }
+    }
+    private void sort(ArrayList<ArrayList<String>> list,int low,int high){
+        if (low < high)
+        {
+            /* pi is partitioning index, arr[pi] is 
+              now at right place */
+            int pi = partition(list, low, high);
+ 
+            // Recursively sort elements before
+            // partition and after partition
+            sort(list, low, pi-1);
+            sort(list, pi+1, high);
+        }
+    }
+     private int partition(ArrayList<ArrayList<String>> list,int low,int high){
+        int pivot = Integer.parseInt(list.get(high).get(1)); 
+        int i = (low-1); // index of smaller element
+        for (int j=low; j<high; j++)
+        {
+            // If current element is smaller than or
+            // equal to pivot
+            if (Integer.parseInt(list.get(j).get(1)) >= pivot)
+            {
+                i++;
+ 
+                // swap arr[i] and arr[j]
+                /*double temp = Integer.parseInt(list.get(i).get(1));
+                resultOfFitness.set(i, resultOfFitness.get(j));
+                resultOfFitness.set(j,temp)  ;*/
+                
+                
+                ArrayList<String> tempList = list.get(i);
+                list.set(i, list.get(j));
+                list.set(j, tempList);
+                
+            }
+        }
+ 
+        // swap arr[i+1] and arr[high] (or pivot)
+      /* double temp = resultOfFitness.get(i+1);
+        resultOfFitness.set(i+1,resultOfFitness.get(high));
+        resultOfFitness.set(high,temp);*/
+        
+         ArrayList<String> tempList = list.get(i+1);
+         list.set(i+1, list.get(high));
+         list.set(high, tempList);
+         
+         
+        return i+1;
     }
     
 }
