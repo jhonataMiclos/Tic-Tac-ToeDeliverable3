@@ -172,9 +172,7 @@ public class JPanelsUI extends JFrame implements ActionListener {
         parentP.add(hostingGameP,HOSTINGGAMEPANEL);
         // Hosting fields
         hostingGameP.add(new JLabel("Waiting for next Player"));
-       /* cancelHostB = new JButton("Cancel hosting");
-        hostingGameP.add(cancelHostB);
-        cancelHostB.addActionListener(this);*/
+      
     }
     private void createJoinP(){
           
